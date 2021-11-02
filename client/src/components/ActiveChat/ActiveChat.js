@@ -22,19 +22,8 @@ const useStyles = makeStyles(() => ({
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  // let { user } = props;
-  // let conversation = props.conversation || {};
-
-  //Useselector more efficent than passing value through pros: 
-  //Home component doesn't need to be called to get updated conversations
-  const state = useSelector(state => state);
-  let conversation;
-  if (state.conversations) {
-    conversation = state.conversations.find(
-      (conversation) => conversation.otherUser.username === state.activeConversation
-    ) || {};
-  }
-  const user = state.user;
+  let { user } = props;
+  let conversation = props.conversation || {};
 
   return (
     <Box className={classes.root}>
@@ -62,16 +51,15 @@ const ActiveChat = (props) => {
   );
 };
 
-// const mapStateToProps = (state) => {
-//   return {
-//     user: state.user,
-//     conversation:
-//       state.conversations &&
-//       state.conversations.find(
-//         (conversation) => conversation.otherUser.username === state.activeConversation
-//       )
-//   };
-// };
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    conversation:
+      state.conversations &&
+      state.conversations.find(
+        (conversation) => conversation.otherUser.username === state.activeConversation
+      )
+  };
+};
 
-export default ActiveChat;
-// export default connect(mapStateToProps, null)(ActiveChat);
+export default connect(mapStateToProps, null)(ActiveChat);
