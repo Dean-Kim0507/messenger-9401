@@ -44,7 +44,7 @@ router.post("/login", async (req, res, next) => {
     // expects username and password in req.body
     const { username, password } = req.body;
     if (!username || !password)
-      return res.status(400).json({ error: "Username and password required" });
+      return res.status(400).json({ error: "User Name and password required" });
 
     const user = await User.findOne({
       where: {
@@ -53,11 +53,11 @@ router.post("/login", async (req, res, next) => {
     });
 
     if (!user) {
-      console.log({ error: `No user found for username: ${username}` });
-      res.status(401).json({ error: "Wrong username and/or password" });
+      console.log({ error: `No user found for User Name: ${username}` });
+      res.status(401).json({ error: "Wrong User Name and/or password" });
     } else if (!user.correctPassword(password)) {
-      console.log({ error: "Wrong username and/or password" });
-      res.status(401).json({ error: "Wrong username and/or password" });
+      console.log({ error: "Wrong User Name and/or password" });
+      res.status(401).json({ error: "Wrong User Name and/or password" });
     } else {
       const token = jwt.sign(
         { id: user.dataValues.id },
