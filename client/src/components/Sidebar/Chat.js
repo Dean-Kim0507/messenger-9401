@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { unReadMsgReset } from "../../store/utils/thunkCreators"
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -21,12 +22,21 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation } = props;
-  const { otherUser } = conversation;
+  const { conversation, activeConversation, unReadMsgReset } = props;
+  const { messages, otherUser } = conversation;
 
   const handleClick = async (conversation) => {
-    await props.setActiveChat(conversation.otherUser.username);
+    await props.setActiveChat(conversation.otherUser.id);
+    await unReadMsgReset({ convoId: conversation.id, senderId: conversation.otherUser.id });
   };
+  //To count the number of unrea messages
+  const countReadMsg = () => {
+    return messages.reduce((acc, cur) => {
+      return (cur.unRead && cur.senderId === otherUser.id) ? ++acc : acc;
+    }, 0);
+  }
+
+  const unRead = otherUser.id !== activeConversation ? countReadMsg() : 0;
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
@@ -36,7 +46,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent conversation={conversation} unRead={unRead} />
     </Box>
   );
 };
@@ -45,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    unReadMsgReset: (body) => {
+      dispatch(unReadMsgReset(body))
     }
   };
 };

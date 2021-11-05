@@ -11,6 +11,15 @@ router.get("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const userId = req.user.id;
+
+    //User's activeConvoId reset as a null
+    await User.update(
+      { activeConvoId: null },
+      { where: { id: userId } }
+    ).catch(error => {
+      throw error;
+    })
+
     const conversations = await Conversation.findAll({
       where: {
         [Op.or]: {

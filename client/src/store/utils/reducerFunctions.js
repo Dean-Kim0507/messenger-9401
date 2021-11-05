@@ -81,3 +81,36 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+//update conversation unread status
+export const updateConvoUnreadInStore = (state, updatedMessages) => {
+  const numberOfUpdatedRows = updatedMessages[0];
+
+  if (numberOfUpdatedRows > 0) {
+    return state.map((convo) => {
+      //Find a current conversation
+      if (convo.id === updatedMessages[1][0].conversationId) {
+        let index = 0;
+        const newConvo = {
+          id: convo.id,
+          latestMessageText: convo.latestMessageText,
+          otherUser: convo.otherUser,
+          //Find unreaded messages
+          messages: convo.messages.map(message => {
+            if (message.id === updatedMessages[1][index].id) {
+              const newMessage = message;
+              newMessage.unRead = false;
+              index++;
+              return newMessage;
+            } else return message;
+          })
+        }
+        return newConvo;
+      } else return convo;
+    });
+  } else {
+    const newState = [...state];
+    return newState;
+  };
+  // return state;
+}

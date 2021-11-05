@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,14 +18,16 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
+  unReadMsgs: {
+    marginRight: "50px"
+  }
 }));
 
 const ChatContent = (props) => {
   const classes = useStyles();
 
-  const { conversation } = props;
+  const { conversation, unRead } = props;
   const { latestMessageText, otherUser } = conversation;
-
   return (
     <Box className={classes.root}>
       <Box>
@@ -35,6 +37,13 @@ const ChatContent = (props) => {
         <Typography className={classes.previewText}>
           {latestMessageText}
         </Typography>
+      </Box>
+      <Box>
+        {unRead > 0 &&
+          <Badge badgeContent={unRead}
+            className={classes.unReadMsgs}
+            color="primary" />
+        }
       </Box>
     </Box>
   );
