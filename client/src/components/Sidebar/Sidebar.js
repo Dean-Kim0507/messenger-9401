@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 const Sidebar = (props) => {
   const classes = useStyles();
   const conversations = props.conversations || [];
-  const { handleChange, searchTerm, activeConversation } = props;
+  const { handleChange, searchTerm, activeConversation, userId } = props;
 
   return (
     <Box className={classes.root}>
@@ -35,6 +35,7 @@ const Sidebar = (props) => {
           return <Chat
             conversation={conversation}
             activeConversation={activeConversation}
+            userId={userId}
             key={conversation.otherUser.username} />;
         })}
     </Box>
@@ -42,10 +43,10 @@ const Sidebar = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  console.log('state in the sidebar', state)
   return {
     conversations: state.conversations,
-    activeConversation: state.activeConversation
+    activeConversation: state.activeConversation,
+    userId: state.user.id,
   };
 };
 

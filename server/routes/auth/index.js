@@ -75,14 +75,6 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.delete("/logout", async (req, res, next) => {
-  //User's activeConvoId reset as a null
-  const userId = req.user.id
-  await User.update(
-    { activeConvoId: null },
-    { where: { id: userId } }
-  ).catch(error => {
-    throw error;
-  })
   res.sendStatus(204);
 });
 

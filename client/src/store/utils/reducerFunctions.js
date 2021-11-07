@@ -41,6 +41,8 @@ export const removeOfflineUserFromStore = (state, id) => {
     if (convo.otherUser.id === id) {
       const convoCopy = { ...convo };
       convoCopy.otherUser.online = false;
+      //User's active conversation set "" when user logout
+      if (convoCopy.otherUser.activeConvoId) convoCopy.otherUser.activeConvoId = ""
       return convoCopy;
     } else {
       return convo;
@@ -82,26 +84,23 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
-//update conversation unread status
-export const updateConvoUnreadInStore = (state, updatedMessages) => {
-  const numberOfUpdatedRows = updatedMessages[0];
+export const updateConvoReadInStore = (state, data) => {
+  const numberOfUpdatedRows = data.numberOfUpdatedRows[0];
 
   if (numberOfUpdatedRows > 0) {
     return state.map((convo) => {
-      //Find a current conversation
-      if (convo.id === updatedMessages[1][0].conversationId) {
-        let index = 0;
+      if (convo.id === Number(data.convoId)) {
+        const convoCopy = { ...convo };
         const newConvo = {
-          id: convo.id,
-          latestMessageText: convo.latestMessageText,
-          otherUser: convo.otherUser,
-          //Find unreaded messages
-          messages: convo.messages.map(message => {
-            if (message.id === updatedMessages[1][index].id) {
-              const newMessage = message;
-              newMessage.unRead = false;
-              index++;
-              return newMessage;
+          id: convoCopy.id,
+          latestMessageText: convoCopy.latestMessageText,
+          otherUser: convoCopy.otherUser,
+          //all read status reset true
+          messages: convoCopy.messages.map(message => {
+            if (!message.read) {
+              const copyMessage = message;
+              copyMessage.read = true;
+              return copyMessage;
             } else return message;
           })
         }
@@ -109,8 +108,28 @@ export const updateConvoUnreadInStore = (state, updatedMessages) => {
       } else return convo;
     });
   } else {
-    const newState = [...state];
-    return newState;
+    return state;
   };
-  // return state;
+}
+
+export const setOtherUserActiveConvoToStore = (state, activeConvoId, userId) => {
+
+  return state.map((convo) => {
+    if (convo.otherUser.id === userId) {
+      const convoCopy = { ...convo };
+      convoCopy.otherUser.activeConvoId = activeConvoId;
+      //Messge unRead statuns change from other user
+      convoCopy.messages = convoCopy.messages.map((message) => {
+        message.read = true
+        return message;
+      })
+      return convoCopy;
+    } else return convo;
+  })
+}
+
+export const countUnreadMsgs = (convo) => {
+  return convo.messages.reduce((acc, cur) => {
+    return (!cur.read && cur.senderId === convo.otherUser.id) ? ++acc : acc;
+  }, 0);
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((NumOfUnRead) => ({
   root: {
     display: "flex",
     justifyContent: "space-between",
@@ -24,23 +24,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChatContent = (props) => {
-  const classes = useStyles();
-
-  const { conversation, unRead } = props;
+  const { conversation, NumOfUnRead } = props;
   const { latestMessageText, otherUser } = conversation;
+  const classes = useStyles(NumOfUnRead);
   return (
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Typography
+          className={classes.previewText}
+          style={{
+            color: NumOfUnRead > 0 ? "black" : "#9CADC8",
+            fontWeight: NumOfUnRead > 0 ? "bold" : "normal",
+          }}
+
+        >
           {latestMessageText}
         </Typography>
       </Box>
       <Box>
-        {unRead > 0 &&
-          <Badge badgeContent={unRead}
+        {NumOfUnRead > 0 &&
+          <Badge badgeContent={NumOfUnRead}
             className={classes.unReadMsgs}
             color="primary" />
         }
