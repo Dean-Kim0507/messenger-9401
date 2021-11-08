@@ -131,7 +131,7 @@ export const readMessages = (body) => async (dispatch) => {
     //Conversation Id is not assigned yet when start a new conversation
     if (!body.convoId) return;
     sendActiveConvoId(body);
-    const { data } = await axios.put(`/api/messages/${body.convoId}/${body.senderId}/${body.activeConvoUserId}`);
+    const { data } = await axios.put(`/api/messages/${body.convoId}/${body.senderId}`);
     dispatch(updateReadStatus(data))
   } catch (error) {
     console.error(error);

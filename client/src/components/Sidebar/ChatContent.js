@@ -15,12 +15,13 @@ const useStyles = makeStyles((NumOfUnRead) => ({
   },
   previewText: {
     fontSize: 12,
-    color: "#9CADC8",
+    color: (NumOfUnRead)=> NumOfUnRead > 0 ? "black" : "#9CADC8",
+    fontWeight: (NumOfUnRead)=> NumOfUnRead > 0 ? "bold" : "normal",
     letterSpacing: -0.17,
   },
   unReadMsgs: {
     marginRight: "50px"
-  }
+  },
 }));
 
 const ChatContent = (props) => {
@@ -35,11 +36,6 @@ const ChatContent = (props) => {
         </Typography>
         <Typography
           className={classes.previewText}
-          style={{
-            color: NumOfUnRead > 0 ? "black" : "#9CADC8",
-            fontWeight: NumOfUnRead > 0 ? "bold" : "normal",
-          }}
-
         >
           {latestMessageText}
         </Typography>

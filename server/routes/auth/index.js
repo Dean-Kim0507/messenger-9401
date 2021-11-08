@@ -74,7 +74,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.delete("/logout", async (req, res, next) => {
+router.delete("/logout", (req, res, next) => {
   res.sendStatus(204);
 });
 

@@ -45,17 +45,18 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:convoId/:senderId/:activeConvoUserId", async (req, res, next) => {
+router.put("/:convoId/:senderId", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
     }
+    const userId = req.user.id;
     const senderId = req.params.senderId;
     const convoId = req.params.convoId;
-    const activeConvoUserId = req.params.activeConvoUserId;
 
-    //Early return if a user is s part of the conversation
-    if (senderId === activeConvoUserId) {
+    //Early return if a user is not a part of the conversation
+    const {dataValues} = await Conversation.findOne({where:{id:convoId}});
+    if(dataValues.user1Id !== userId && dataValues.user2Id!==userId){
       return res.sendStatus(403);
     }
 
