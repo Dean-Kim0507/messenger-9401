@@ -41,6 +41,8 @@ export const removeOfflineUserFromStore = (state, id) => {
     if (convo.otherUser.id === id) {
       const convoCopy = { ...convo };
       convoCopy.otherUser.online = false;
+      //User's active conversation set "" when user logout
+      if (convoCopy.otherUser.activeConvoId) convoCopy.otherUser.activeConvoId = ""
       return convoCopy;
     } else {
       return convo;
@@ -81,3 +83,53 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     }
   });
 };
+
+export const updateConvoReadInStore = (state, data) => {
+  const numberOfUpdatedRows = data.numberOfUpdatedRows[0];
+
+  if (numberOfUpdatedRows > 0) {
+    return state.map((convo) => {
+      if (convo.id === Number(data.convoId)) {
+        const convoCopy = { ...convo };
+        const newConvo = {
+          id: convoCopy.id,
+          latestMessageText: convoCopy.latestMessageText,
+          otherUser: convoCopy.otherUser,
+          //all read status reset true
+          messages: convoCopy.messages.map(message => {
+            if (!message.read) {
+              const copyMessage = message;
+              copyMessage.read = true;
+              return copyMessage;
+            } else return message;
+          })
+        }
+        return newConvo;
+      } else return convo;
+    });
+  } else {
+    return state;
+  };
+}
+
+export const setOtherUserActiveConvoToStore = (state, activeConvoId, userId) => {
+
+  return state.map((convo) => {
+    if (convo.otherUser.id === userId) {
+      const convoCopy = { ...convo };
+      convoCopy.otherUser.activeConvoId = activeConvoId;
+      //Messge unRead statuns change from other user
+      convoCopy.messages = convoCopy.messages.map((message) => {
+        message.read = true
+        return message;
+      })
+      return convoCopy;
+    } else return convo;
+  })
+}
+
+export const countUnreadMsgs = (convo) => {
+  return convo.messages.reduce((acc, cur) => {
+    return (!cur.read && cur.senderId === convo.otherUser.id) ? ++acc : acc;
+  }, 0);
+}

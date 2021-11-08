@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  updateReadStatus,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -117,3 +118,22 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+const sendActiveConvoId = (body) => {
+  socket.emit("active-conversation", {
+    activeConvoId: body.convoId,
+    userId: body.userId
+  });
+};
+
+export const readMessages = (body) => async (dispatch) => {
+  try {
+    //Conversation Id is not assigned yet when start a new conversation
+    if (!body.convoId) return;
+    sendActiveConvoId(body);
+    const { data } = await axios.put(`/api/messages/${body.convoId}/${body.senderId}`);
+    dispatch(updateReadStatus(data))
+  } catch (error) {
+    console.error(error);
+  }
+}

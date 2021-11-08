@@ -3,7 +3,6 @@ import { FormControl, FilledInput } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
-import ActiveChat from "./ActiveChat";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -34,7 +33,8 @@ const Input = (props) => {
       text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
-      sender: conversationId ? null : user
+      sender: conversationId ? null : user,
+      otherUserActiveConvo: otherUser.activeConvoId ? otherUser.activeConvoId : null,
     };
     await postMessage(reqBody);
     setText("");
