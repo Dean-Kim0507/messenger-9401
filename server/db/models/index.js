@@ -14,6 +14,17 @@ Conversation.belongsToMany(User,{
   foreignKey: 'convo_id'
 })
 
+User.belongsToMany(Message,{
+  through: 'user_messages',
+  foreignKey: 'user_id'
+})
+
+Message.belongsToMany(User,{
+  through: 'user_messages',
+  foreignKey: 'message_id'
+})
+
+
 Message.belongsTo(Conversation);
 Conversation.hasMany(Message);
 

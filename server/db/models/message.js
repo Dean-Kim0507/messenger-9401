@@ -10,6 +10,7 @@ const Message = db.define("message", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
+  //Full features are not implemented, I'll leave read attribute just for passing a test.
   read: {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
