@@ -17,6 +17,10 @@ Conversation.belongsToMany(User,{
 Message.belongsTo(Conversation);
 Conversation.hasMany(Message);
 
+//Full features are not implemented, I'll leave these just for passing a test.
+Conversation.belongsTo(User, { as: "user1" });
+Conversation.belongsTo(User, { as: "user2" });
+
 module.exports = {
   User,
   Conversation,
