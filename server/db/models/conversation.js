@@ -1,11 +1,12 @@
 const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
 
 const Conversation = db.define("conversation", {
   hostId: {
     type: Sequelize.INTEGER,
-    allowNull: false,
+    allowNull: true,
   }
 });
 
